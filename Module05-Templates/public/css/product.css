@@ -1,40 +1,4 @@
-.product-form {
-  width: 20rem;
-  max-width: 90%;
-  margin: auto;
-}
-
-.form-control {
-  margin: 1rem 0;
-}
-
-.form-control label,
-.form-control input {
-  display: block;
-  width: 100%;
-}
-
-.form-control input {
-  border: 1px solid #a5b4fc;
-  font: inherit;
-  border-radius: 2px;
-}
-
-.form-control input:focus {
-  outline-color: #6366f1;
-}
-
-button {
-  font: inherit;
-  border: 1px solid #312e81;
-  border-radius: 4px;
-  color: white;
-  background-color: #312e81;
-  padding: 0.5rem 2rem;
-}
-
-button:hover,
-button:active {
-  border: 1px solid #6366f1;
-  background-color: #6366f1;
+.ui.input {
+  width: 24rem;
+  max-width: 24rem !important;
 }

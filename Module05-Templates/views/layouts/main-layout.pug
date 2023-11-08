@@ -1,0 +1,16 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title #{pageTitle}
+        <link href="https://cdn.bootcdn.net/ajax/libs/semantic-ui/2.5.0/semantic.min.css" rel="stylesheet">
+        block styles
+    body 
+        header.main-header
+            div.ui.inverted.segment
+                div.ui.inverted.secondary.menu
+                    a.item(href="/" class=(path==="/" ? "active" : "")) Shop
+                    a.item(href="/admin/add-product" class=(path==="/admin/add-product" ? "active" : "")) Add Product
+        main.ui.container
+            block content
