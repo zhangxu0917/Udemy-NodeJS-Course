@@ -1,0 +1,29 @@
+{{#if hasProduct}}
+  <div class="grid ui cards">
+    {{#each products}}
+      <div class="ui card">
+        <div class="image">
+          <img src="/images/earrings.jpg" alt="" />
+        </div>
+        <div class="content">
+          <div class="header">Matt Giampietro</div>
+          <div class="meta">
+            <div>$19.90</div>
+          </div>
+          <div class="description">A very interesting book about so many even
+            more interesting things!</div>
+        </div>
+        <div class="extra content">
+          <button class="ui primary button">Add to Cart</button>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  <div class="ui placeholder segment">
+    <div class="ui icon header">
+      <i class="product hunt icon"></i>
+      <p>No Products</p>
+    </div>
+  </div>
+{{/if}}

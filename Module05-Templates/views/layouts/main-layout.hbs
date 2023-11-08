@@ -1,0 +1,30 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/semantic-ui/2.5.0/semantic.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/main.css" />
+    {{#if formCSS}}
+      <link rel="stylesheet" href="/css/form.css" />
+    {{/if}}
+    <title>{{pageTitle}}</title>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="ui inverted segment">
+        <div class="ui inverted secondary menu">
+          <a href="/" class="item">Shop</a>
+          <a href="/admin/add-product" class="item">Add Product</a>
+        </div>
+
+      </div>
+    </header>
+
+    <main class="ui container">
+      {{{body}}}
+    </main>
+  </body>
+</html>

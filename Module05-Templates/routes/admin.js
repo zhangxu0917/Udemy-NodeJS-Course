@@ -2,11 +2,19 @@ const express = require("express");
 const router = express.Router();
 
 const products = [{ title: "abc" }];
+// const products = [];
 
 router.get("/add-product", (req, res) => {
+  // // FIXME: pug template
+  //   res.render("add-product", {
+  //     pageTitle: "Add Product",
+  //     path: "/admin/add-product",
+  //   });
+
   res.render("add-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
+    formCSS: true,
   });
 });
 
