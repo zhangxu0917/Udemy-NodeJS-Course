@@ -1,0 +1,26 @@
+extends layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/main.css")
+    link(rel="stylesheet", href="/css/form.css")
+
+block content
+    form.ui.form
+        div.field
+            label First Name
+            input(type="text" name="first-name" placeholder="First Name")
+        div.field
+            label Last Name
+            input(type="text" name="last-name" placeholder="Last Name")
+        div.field
+           
+        
+        button.ui.button(type="submit") Submit
+    //- div.ui.placeholder.segment
+    //-     div.ui.icon.header
+    //-         i.product.hunt.icon
+    //-         p Add Product
+    //-     //- div.field
+    //-     form.ui.fluid.action.input(action="/admin/add-product" method="post")
+    //-         input(type="text" placeholder="Add Product" name="title")
+    //-         button.ui.primary.button(type="submit") Add Produc

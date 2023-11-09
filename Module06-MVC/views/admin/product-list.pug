@@ -1,0 +1,49 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/main.css")
+    link(rel="stylesheet", href="/css/form.css")
+
+block content
+    h2.ui.header
+        i.product.hunt.icon
+        div.content Products
+
+    table.ui.celled.padded.table
+        thead
+            tr
+                th.single.line Title
+                th Image
+                th Price
+                th Description
+                th(style="width: 240px") Actions
+        tbody
+            each product in products
+                tr
+                    td
+                        div A
+        
+                    td.single.line 
+                        img.ui.small.image(src="/images/earnings.jpg")
+
+                    td
+                        div $19.90
+        
+                    td
+                        div Creatine supplementation is the reference compound for increasing muscular creatine levels; there is variability in this increase, however, with some nonresponders.
+                    td.center.aligned
+                        button.primary.ui.button(style="margin-right: 1rem") Edit 
+                        button.negative.ui.button Delete 
+   
+        tfoot
+            tr
+                th(colspan="5")
+                    div.ui.right.floated.pagination.menu
+                        a.icon.item
+                            i.left.chevron.icon
+                        a.item 1
+                        a.item 2
+                        a.item 3
+                        a.item 4
+                        a.icon.item
+                            i.right.chevron.icon
