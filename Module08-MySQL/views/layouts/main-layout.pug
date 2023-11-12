@@ -1,0 +1,22 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title #{pageTitle}
+        link(href="https://cdn.bootcdn.net/ajax/libs/semantic-ui/2.5.0/semantic.min.css" rel="stylesheet")
+        script(src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js")
+        script(src="https://cdn.bootcdn.net/ajax/libs/semantic-ui/2.5.0/semantic.min.js")
+        block styles
+    body 
+        header.main-header
+            div.ui.inverted.segment
+                div.ui.inverted.secondary.menu
+                    a.item(href="/" class=(path==="/" ? "active" : "")) Shop
+                    a.item(href="/products" class=(path==="/products" ? "active" : "")) Products
+                    a.item(href="/cart" class=(path==="/cart" ? "active" : "")) Cart
+                    //- a.item(href="/checkout" class=(path==="/checkout" ? "active" : "")) Checkout
+                    a.item(href="/orders" class=(path==="/orders" ? "active" : "")) Orders
+                    a.item(href="/admin/products" class=(path==="/admin/products" ? "active" : "")) Admin Product
+        main.ui.container
+            block content
