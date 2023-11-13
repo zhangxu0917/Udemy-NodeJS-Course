@@ -3,4 +3,36 @@ extends ../layouts/main-layout.pug
 block styles
     link(rel="stylesheet", href="/css/main.css")
 block content
-    h1 Orders
+    h2.ui.header
+        i.shopping.basket.icon
+        div.content #{pageTitle}
+    div.ui.ui.divider
+        if orders.length <= 0
+            div.ui.placeholder.segment
+                div.ui.icon.header
+                    i.folder.open.outline.icon
+                    span Nothing there, It's Empty!
+        else    
+            table.ui.celled.structured.table
+                thead 
+                    tr 
+                        th OrderId 
+                        th ProductTitle 
+                        th Quantity
+                tbody 
+                    for order of orders
+                        each product, index in  order.products
+                            tr
+                                if order.products.length > 1
+                                    if index === 0
+                                        td(rowspan=order.products.length) # #{order.id}
+                                        td #{product.title}
+                                        td #{product.orderItem.quantity}
+                                    else 
+                                        td #{product.title}
+                                        td #{product.orderItem.quantity}
+
+                                else 
+                                    td # #{order.id}
+                                    td #{product.title}
+                                    td #{product.orderItem.quantity}
