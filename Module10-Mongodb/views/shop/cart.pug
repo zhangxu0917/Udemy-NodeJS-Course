@@ -1,0 +1,46 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/main.css")
+block content
+    h2.ui.header
+        i.shopping.cart.icon
+        div.content #{pageTitle}
+    div.ui.ui.divider
+
+    if products.length > 0
+        table.ui.celled.table
+            thead
+                tr
+                    th Title
+                    th Image
+                    th Price
+                    th Quantity
+                    th Actions
+            tbody
+                for product in (products || [])
+                    tr
+                        td #{product.title}
+                        td 
+                            img.ui.tiny.image(src=`${product.imageUrl}`) 
+                        td $ #{product.price}
+                        td #{product.cartItem.quantity}
+                        td 
+                            form(action="/delete-cart" method="post")
+                                input(type="hidden", name="prodId" value=`${product.id}`)
+                                button.button.ui.negative Delete
+            tfoot
+                tr
+                    th(colspan="5")
+                        div(style="display: flex; justify-content: space-between; align-items: center;") 
+                            div
+                            //- span(style="font-weight: bold;") total: $ #{cart && cart.totalPrice ? cart.totalPrice : 0}
+                            form(action="/create-order"  method="post")
+                                input(type="hidden", name="")
+                                button.ui.button.primary(type="submit") Order Now 
+    else
+        div.ui.placeholder.segment
+            div.ui.icon.header
+                i.folder.open.outline.icon
+                span No Product in cart, It's Empty!
+            

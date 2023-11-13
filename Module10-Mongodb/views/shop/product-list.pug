@@ -1,0 +1,32 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/main.css")
+    style.
+        .description {
+            display: -webkit-box;  
+            -webkit-line-clamp: 3;  
+            -webkit-box-orient: vertical;    
+            overflow: hidden;  
+        }
+block content
+    if products.length > 0
+        .grid.ui.three.column
+            each product in products
+                div.column
+                    div.ui.card.fluid
+                        div.image
+                            img(src=`${product.imageUrl}`)
+                        div.content 
+                            div.header #{product.title}
+                            div.meta
+                                div $ #{product.price}
+                            div.description #{product.description}
+                        div.extra.content(style="display: flex;")
+                            a.ui.button.positive(href=`/products/${product.id}`) Details
+                            include ../layouts/add-to-cart.pug
+    else 
+        div.ui.placeholder.segment
+            div.ui.icon.header
+                i.product.hunt.icon
+                p No Products
