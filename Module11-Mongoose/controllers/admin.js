@@ -14,14 +14,7 @@ module.exports.postAddProduct = async (req, res, next) => {
   const { title, imageUrl, price, description } = req.body;
 
   try {
-    const product = new Product(
-      title,
-      price,
-      description,
-      imageUrl,
-      null,
-      req.user._id
-    );
+    const product = new Product({ title, price, description, imageUrl });
     await product.save();
     res.redirect("/");
   } catch (error) {
@@ -55,7 +48,11 @@ module.exports.postEditProduct = async (req, res, next) => {
   const { prodId, title, price, imageUrl, description } = req.body;
 
   try {
-    let product = new Product(title, price, description, imageUrl, prodId);
+    let product = await Product.findById(prodId);
+    product.title = title;
+    product.price = price;
+    product.imageUrl = imageUrl;
+    product.description = description;
     await product.save();
     res.redirect("/admin/products");
   } catch (error) {
@@ -67,7 +64,8 @@ module.exports.postDeleteProduct = async (req, res, next) => {
   const { prodId } = req.body;
 
   try {
-    await Product.deleteById(prodId);
+    // FIXME: current version mongoose already change the `findByIdAndRemove` to `findByIdAndDelete`, findByIdAndRemove has deprecated;
+    await Product.findByIdAndDelete(prodId);
     res.redirect("/admin/products");
   } catch (error) {
     console.error(error);
@@ -75,7 +73,7 @@ module.exports.postDeleteProduct = async (req, res, next) => {
 };
 
 module.exports.getProducts = async (req, res, next) => {
-  const products = await Product.fetchAll();
+  const products = await Product.find();
 
   res.render("admin/product-list", {
     pageTitle: "Admin Products",
