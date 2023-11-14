@@ -1,0 +1,57 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/main.css")
+    link(rel="stylesheet", href="/css/form.css")
+    style.
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .description {
+            display: -webkit-box;  
+            -webkit-line-clamp: 3;  
+            -webkit-box-orient: vertical;    
+            overflow: hidden;  
+        }
+
+block content
+    h2.ui.header
+        div
+            i.product.hunt.icon
+            div.content Products
+        a.button.ui.primary(href="/admin/add-product") Add Product 
+
+    table.ui.celled.padded.table
+        thead
+            tr
+                th.single.line Title
+                th Image
+                th Price
+                th(width="400") Description
+                th(style="width: 240px") Actions
+        tbody
+            each product in products
+                tr
+                    td
+                        div #{product.title}
+        
+                    td.single.line 
+                        img.ui.small.image(src=`${product.imageUrl}`)
+
+                    td
+                        div $ #{product.price}
+        
+                    td
+                        div.description #{product.description}
+                    td.center.aligned
+                        a.primary.ui.button(style="margin-right: 1rem" href=`/admin/edit-product/${product._id}?edit=1`) Edit 
+                        form(action="/admin/delete-product" method="post" style="display: inline-block")
+                            input(type="hidden", name="prodId" value=`${product._id}`) 
+                            button.negative.ui.button Delete 
+   
+        tfoot
+            tr
+                th(colspan="5")
+                    <div>#{productCount} Product</div>
