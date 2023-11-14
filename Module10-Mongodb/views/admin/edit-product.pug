@@ -36,7 +36,7 @@ block content
             placeholder="Description") #{editing ? product.description : ""} 
         
         if editing 
-            input(type="hidden" value=`${product.id}` name="prodId")
+            input(type="hidden" value=`${product._id}` name="prodId")
         button.ui.button.primary(type="submit") 
             if editing 
                 span Edit Product

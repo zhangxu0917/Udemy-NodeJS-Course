@@ -1,30 +1,83 @@
-const Sequelize = require("sequelize");
+const { getDb } = require("../util/database");
+// FIXME:
+const { ObjectId } = require("mongodb");
 
-const sequelize = require("../util/database");
+class Product {
+  constructor(title, price, description, imageUrl, id, userId) {
+    this.title = title;
+    this.price = price;
+    this.description = description;
+    this.imageUrl = imageUrl;
+    this._id = id ? new ObjectId(id) : undefined;
+    this.userId = userId;
+  }
 
-const Product = sequelize.define("product", {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
-  },
-  title: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  price: {
-    type: Sequelize.DOUBLE,
-    allowNull: false,
-  },
-  imageUrl: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  description: {
-    type: Sequelize.TEXT,
-    allowNull: false,
-  },
-});
+  save() {
+    const db = getDb();
+    let dbOp;
+
+    if (this._id) {
+      console.log("12312312", this._id);
+      // FIXME: update
+      dbOp = db.collection("products").updateOne(
+        { _id: this._id },
+        {
+          $set: this,
+        }
+      );
+    } else {
+      // FIXME: create
+      dbOp = db.collection("products").insertOne(this);
+    }
+
+    dbOp
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  static async fetchAll() {
+    try {
+      const db = getDb();
+
+      const products = await db.collection("products").find().toArray();
+      console.log(products);
+      return products;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  static async findById(prodId) {
+    try {
+      const db = getDb();
+      console.log(prodId);
+
+      const product = await db.collection("products").findOne({
+        // FIXME:
+        _id: new ObjectId(prodId),
+      });
+
+      console.log(2222, product);
+      return product;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  static async deleteById(prodId) {
+    const db = getDb();
+    try {
+      await db.collection("products").deleteOne({
+        _id: new ObjectId(prodId),
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
 
 module.exports = Product;

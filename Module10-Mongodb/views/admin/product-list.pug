@@ -46,9 +46,9 @@ block content
                     td
                         div.description #{product.description}
                     td.center.aligned
-                        a.primary.ui.button(style="margin-right: 1rem" href=`/admin/edit-product/${product.id}?edit=1`) Edit 
+                        a.primary.ui.button(style="margin-right: 1rem" href=`/admin/edit-product/${product._id}?edit=1`) Edit 
                         form(action="/admin/delete-product" method="post" style="display: inline-block")
-                            input(type="hidden", name="prodId" value=`${product.id}`) 
+                            input(type="hidden", name="prodId" value=`${product._id}`) 
                             button.negative.ui.button Delete 
    
         tfoot

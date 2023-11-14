@@ -24,7 +24,7 @@ block content
                                 div $ #{product.price}
                             div.description #{product.description}
                         div.extra.content(style="display: flex;")
-                            a.ui.button.positive(href=`/products/${product.id}`) Details
+                            a.ui.button.positive(href=`/products/${product._id}`) Details
                             include ../layouts/add-to-cart.pug
     else 
         div.ui.placeholder.segment
