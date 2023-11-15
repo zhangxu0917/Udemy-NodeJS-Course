@@ -21,18 +21,18 @@ block content
                         th Quantity
                 tbody 
                     for order of orders
-                        each product, index in  order.items
+                        each product, index in  order.products
                             tr
-                                if order.items.length > 1
+                                if order.products.length > 1
                                     if index === 0
                                         td(rowspan=order.items.length) # #{order._id}
-                                        td #{product.title}
+                                        td #{product.product.title}
                                         td #{product.quantity}
                                     else 
-                                        td #{product.title}
+                                        td #{product.product.title}
                                         td #{product.quantity}
 
                                 else 
                                     td # #{order._id}
-                                    td #{product.title}
+                                    td #{product.product.title}
                                     td #{product.quantity}

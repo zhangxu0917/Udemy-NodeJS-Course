@@ -14,7 +14,14 @@ module.exports.postAddProduct = async (req, res, next) => {
   const { title, imageUrl, price, description } = req.body;
 
   try {
-    const product = new Product({ title, price, description, imageUrl });
+    const product = new Product({
+      title,
+      price,
+      description,
+      imageUrl,
+      // FIXME: Focus there, Your can pass req.user directly, mongoose can deal with this, just add user._id
+      userId: req.user,
+    });
     await product.save();
     res.redirect("/");
   } catch (error) {
@@ -73,7 +80,7 @@ module.exports.postDeleteProduct = async (req, res, next) => {
 };
 
 module.exports.getProducts = async (req, res, next) => {
-  const products = await Product.find();
+  const products = await Product.find().populate("userId");
 
   res.render("admin/product-list", {
     pageTitle: "Admin Products",
