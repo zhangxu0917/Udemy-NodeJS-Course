@@ -1,0 +1,11 @@
+main {
+  padding-bottom: 3rem;
+}
+
+.main-header {
+  margin-bottom: 2.5rem;
+}
+
+.ui.segment {
+  border-radius: 0%;
+}

@@ -1,0 +1,50 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/main.css")
+    link(rel="stylesheet", href="/css/form.css")
+    
+
+
+block content
+    h2.ui.header
+        i.product.hunt.icon
+        div.content #{pageTitle}
+    div.ui.ui.divider
+
+    if hasError
+        div.ui.error.message
+            i.close.icon
+            div.header Error
+            ul.list
+                li #{errorMsg}
+
+    form.ui.form(method="post" action=`${editing ? "/admin/edit-product/" + product.id : "/admin/add-product"}`)
+        div.field
+            label Title
+            input(type="text" name="title" placeholder="Product Title" value=`${editing ? product.title : ""}`)
+        div.field
+            label Image
+            input(type="text" name="imageUrl" placeholder="Image Url" value=`${editing ? product.imageUrl : ""}`)
+        div.field
+            label Price
+            input(type="number" name="price" step="0.01" placeholder="Price" value=`${editing ? product.price : ""}`)
+        div.field
+            label Description
+            textarea(rows="5" 
+            name="description"
+            placeholder="Description") #{editing ? product.description : ""} 
+        
+        if editing 
+            input(type="hidden" value=`${product._id}` name="prodId")
+        button.ui.button.primary(type="submit") 
+            if editing 
+                span Edit Product
+            else 
+                span Add Product
+
+    script. 
+        $('.message .close').on('click', function() {
+            $(this).closest('.message')
+            .transition('fade');
+        });
