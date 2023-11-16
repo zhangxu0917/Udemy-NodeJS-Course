@@ -5,8 +5,7 @@ module.exports.getAddProduct = (req, res, next) => {
     path: "/admin/add-product",
     pageTitle: "Add Product",
     editing: false,
-    hasError: false,
-    errorMsg: "",
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
@@ -19,8 +18,8 @@ module.exports.postAddProduct = async (req, res, next) => {
       price,
       description,
       imageUrl,
-      // FIXME: Focus there, Your can pass req.user directly, mongoose can deal with this, just add user._id
-      userId: req.user,
+      // FIXME: Focus there, Your can pass req.session.user directly, mongoose can deal with this, just add user._id
+      userId: req.session.user,
     });
     await product.save();
     res.redirect("/");
@@ -48,6 +47,7 @@ module.exports.getEditProduct = async (req, res, next) => {
     pageTitle: "Edit Product",
     editing: editMode,
     product,
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
@@ -87,6 +87,6 @@ module.exports.getProducts = async (req, res, next) => {
     products,
     productCount: products.length,
     path: "/admin/products",
-    isAuthenticated: req.isLoggedIn,
+    isAuthenticated: req.session.isLoggedIn,
   });
 };

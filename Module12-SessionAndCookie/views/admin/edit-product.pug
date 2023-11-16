@@ -12,13 +12,6 @@ block content
         div.content #{pageTitle}
     div.ui.ui.divider
 
-    if hasError
-        div.ui.error.message
-            i.close.icon
-            div.header Error
-            ul.list
-                li #{errorMsg}
-
     form.ui.form(method="post" action=`${editing ? "/admin/edit-product/" + product.id : "/admin/add-product"}`)
         div.field
             label Title
@@ -42,9 +35,3 @@ block content
                 span Edit Product
             else 
                 span Add Product
-
-    script. 
-        $('.message .close').on('click', function() {
-            $(this).closest('.message')
-            .transition('fade');
-        });

@@ -5,10 +5,18 @@ const path = require("path");
 const errorContainer = require("./controllers/error");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 const User = require("./models/user");
 
+// FIXME: this url host must use 127.0.0.1, else it will not connect successfully.
+const MONGODB_URI = "mongodb://127.0.0.1:27017/shop";
+
 const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: "sessions",
+});
 
 app.set("view engine", "pug");
 app.set("views", "views");
@@ -25,6 +33,7 @@ app.use(
     secret: "My secret",
     resave: false,
     saveUninitialized: false,
+    store,
   })
 );
 
@@ -33,10 +42,12 @@ const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(async (req, res, next) => {
-  try {
-    const user = await User.findById("6554b72dc6c5b5f307a72e3d");
+  if (!req.session.user) {
+    return next();
+  }
 
-    console.log("user", user);
+  try {
+    const user = await User.findById(req.session.user._id);
     req.user = user;
     next();
   } catch (error) {
@@ -53,8 +64,7 @@ app.use("/", errorContainer.get404);
 const server = http.createServer(app);
 
 mongoose
-  // FIXME: this url host must use 127.0.0.1, else it will not connect successfully.
-  .connect("mongodb://127.0.0.1:27017/shop")
+  .connect(MONGODB_URI)
   .then(() => {
     console.log("Connected to MongoDB!");
 

@@ -26,7 +26,6 @@ app.use(async (req, res, next) => {
   try {
     const user = await User.findById("6554b72dc6c5b5f307a72e3d");
 
-    console.log("user", user);
     req.user = user;
     next();
   } catch (error) {
