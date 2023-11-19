@@ -6,6 +6,9 @@ const errorContainer = require("./controllers/error");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const csrf = require("csurf");
+const csrfProtection = csrf();
+const flash = require("connect-flash");
 
 const User = require("./models/user");
 
@@ -36,6 +39,8 @@ app.use(
     store,
   })
 );
+app.use(csrfProtection);
+app.use(flash());
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -53,6 +58,12 @@ app.use(async (req, res, next) => {
   } catch (error) {
     console.error(error);
   }
+});
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use("/admin", adminRoutes);

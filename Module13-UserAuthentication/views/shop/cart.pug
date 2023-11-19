@@ -28,6 +28,7 @@ block content
                         td 
                             form(action="/delete-cart" method="post")
                                 input(type="hidden", name="prodId" value=`${product._id}`)
+                                input(type="hidden", name="_csrf" value=`${csrfToken}`) 
                                 button.button.ui.negative Delete
             tfoot
                 tr
@@ -36,7 +37,7 @@ block content
                             div
                             //- span(style="font-weight: bold;") total: $ #{cart && cart.totalPrice ? cart.totalPrice : 0}
                             form(action="/create-order"  method="post")
-                                input(type="hidden", name="")
+                                input(type="hidden", name="_csrf" value=`${csrfToken}`) 
                                 button.ui.button.primary(type="submit") Order Now 
     else
         div.ui.placeholder.segment

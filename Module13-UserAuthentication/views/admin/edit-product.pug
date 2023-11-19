@@ -30,6 +30,8 @@ block content
         
         if editing 
             input(type="hidden" value=`${product._id}` name="prodId")
+            input(type="hidden", name="_csrf" value=`${csrfToken}`) 
+
         button.ui.button.primary(type="submit") 
             if editing 
                 span Edit Product

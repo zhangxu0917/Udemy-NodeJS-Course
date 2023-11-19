@@ -3,13 +3,15 @@ extends ../layouts/main-layout.pug
 block styles
     link(rel="stylesheet", href="/css/main.css")
 block content
+    include ../layouts/error-message.pug
+
     h2.ui.header
         i.user.icon
         div.content #{pageTitle}
     div.ui.ui.divider
 
     div.container(style="width: 36rem; margin: 0 auto;") 
-        form.ui.form(method="post" action="/login")
+        form.ui.form(method="post" action="/signup")
             div.field
                 label Email
                 input(type="text" name="email" placeholder="Please input your email")
@@ -19,6 +21,6 @@ block content
             div.field
                 label Confirm Password
                 input(type="password" name="confirmPassword" placeholder="Please confirm your password")
-            
+                input(type="hidden", name="_csrf" value=`${csrfToken}`) 
             button.ui.button.primary(type="submit") 
                 span SignUp

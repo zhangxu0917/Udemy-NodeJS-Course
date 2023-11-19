@@ -23,6 +23,7 @@ html(lang="en")
                     div.right.menu 
                         if isAuthenticated
                             form.item(method="POST" action="/logout")
+                                input(type="hidden", name="_csrf" value=`${csrfToken}`) 
                                 button.ui.button.primary(type="submit") Logout 
                         else 
                             a.item(href="/login" class=path=="/login " ? "active" : "") Login

@@ -1,23 +1,49 @@
+const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 exports.getLogin = (req, res, next) => {
-  console.log(req.session.isLoggedIn);
+  let errorMessage = req.flash("error");
+
+  if (errorMessage.length > 0) {
+    errorMessage = errorMessage[0];
+  } else {
+    errorMessage = null;
+  }
+
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
     isAuthenticated: false,
+    errorMessage,
   });
 };
 
 exports.postLogin = async (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
   try {
-    const user = await User.findById("6554b72dc6c5b5f307a72e3d");
-    req.session.user = user;
-    req.session.isLoggedIn = true;
-    await req.session.save();
-    res.redirect("/");
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      req.flash("error", "Invalid email or password");
+      return res.redirect("/login");
+    }
+
+    const toMatch = await bcrypt.compare(password, user.password);
+
+    if (toMatch) {
+      req.session.user = user;
+      req.session.isLoggedIn = true;
+      await req.session.save();
+      return res.redirect("/");
+    }
+
+    req.flash("error", "Invalid email or password");
+    res.redirect("/login");
   } catch (error) {
     console.error(error);
+    res.redirect("/login");
   }
 };
 
@@ -28,14 +54,25 @@ exports.postLogout = async (req, res, next) => {
 };
 
 exports.getSignup = async (req, res, next) => {
+  let errorMessage = req.flash("error");
+
+  if (errorMessage.length > 0) {
+    errorMessage = errorMessage[0];
+  } else {
+    errorMessage = null;
+  }
+
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
     isAuthenticated: false,
+    errorMessage,
   });
 };
 
 exports.postSignup = async (req, res, next) => {
+  console.log("postSignup");
+
   const { email, password, confirmPassword } = req.body;
 
   try {
@@ -44,12 +81,15 @@ exports.postSignup = async (req, res, next) => {
     });
 
     if (userDoc) {
+      req.flash("error", "Email exists already, please pick a different one.");
       return res.redirect("/signup");
     }
 
+    const hashedPassword = await bcrypt.hash(password, 12);
+
     const user = new User({
       email,
-      password,
+      password: hashedPassword,
       cart: { item: [] },
     });
 

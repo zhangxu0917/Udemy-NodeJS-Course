@@ -3,6 +3,11 @@ extends ../layouts/main-layout.pug
 block styles
     link(rel="stylesheet", href="/css/main.css")
 block content
+    if errorMessage
+        div.ui.error.message
+            div.header There were some errors with your submission
+            p #{errorMessage}
+   
     h2.ui.header
         i.user.icon
         div.content #{pageTitle}
@@ -16,7 +21,6 @@ block content
             div.field
                 label Password
                 input(type="password" name="password" placeholder="Please input your password")
-            
-            
+                input(type="hidden", name="_csrf" value=`${csrfToken}`) 
             button.ui.button.primary(type="submit") 
                 span Login 
