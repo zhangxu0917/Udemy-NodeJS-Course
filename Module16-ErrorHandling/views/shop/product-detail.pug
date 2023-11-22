@@ -1,0 +1,24 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/main.css")
+    link(rel="stylesheet", href="/css/product-detail.css")
+block content
+    h2.ui.header
+
+        div
+            a.ui.green.right.ribbon.label $ #{product.price}
+            div
+                i.icon.product.hunt
+                div.content Product - #{product.title}
+             
+        div
+            include ../layouts/add-to-cart.pug
+                
+
+    div.ui.divider
+    div.ui.segment
+        div.ui.medium.image.left.floated 
+            img(src=`${product.imageUrl}`, alt="")
+        p.description #{product.description}
+

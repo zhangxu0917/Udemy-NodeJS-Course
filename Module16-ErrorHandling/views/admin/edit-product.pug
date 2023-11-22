@@ -1,0 +1,43 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/main.css")
+    link(rel="stylesheet", href="/css/form.css")
+    
+block content
+    if errorMessage
+        div.ui.error.message
+            div.header There were some errors with your submission
+            p #{errorMessage}
+
+    h2.ui.header
+        i.product.hunt.icon
+        div.content #{pageTitle}
+    div.ui.ui.divider
+
+    form.ui.form(method="post" action=`${editing ? "/admin/edit-product/" + product.id : "/admin/add-product"}`)
+        div.field(class=`${validationErrors.find(e => e.path === 'title') ? 'error' : ''}`)
+            label Title
+            input(type="text" name="title" placeholder="Product Title" value=`${editing || hasError ? product.title : ""}`)
+        div.field(class=`${validationErrors.find(e => e.path === 'imageUrl') ? 'error' : ''}`)
+            label Image
+            input(type="text" name="imageUrl" placeholder="Image Url" value=`${editing || hasError ? product.imageUrl : ""}`)
+        div.field(class=`${validationErrors.find(e => e.path === 'price') ? 'error' : ''}`)
+            label Price
+            input(type="number" name="price" step="0.01" placeholder="Price" value=`${editing || hasError ? product.price : ""}`)
+        div.field(class=`${validationErrors.find(e => e.path === 'description') ? 'error' : ''}`)
+            label Description
+            textarea(rows="5" 
+            name="description"
+            placeholder="Description") #{editing || hasError ? product.description : ""} 
+            input(type="hidden", name="_csrf" value=`${csrfToken}`) 
+
+        if editing 
+            input(type="hidden" value=`${product._id}` name="prodId")
+           
+
+        button.ui.button.primary(type="submit") 
+            if editing 
+                span Edit Product
+            else 
+                span Add Product
