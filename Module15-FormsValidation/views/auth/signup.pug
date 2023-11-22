@@ -12,15 +12,18 @@ block content
 
     div.container(style="width: 36rem; margin: 0 auto;") 
         form.ui.form(method="post" action="/signup")
-            div.field
+            div.field(class=`${validationErrors.find(e => e.path === 'email') ? 'error' : ''}`)
                 label Email
-                input(type="text" name="email" placeholder="Please input your email")
-            div.field
+                input(type="text" name="email" placeholder="Please input your email"
+                value=`${oldInput.email}`)
+            div.field(class=`${validationErrors.find(e => e.path === 'password') ? 'error' : ''}`)
                 label Password
-                input(type="password" name="password" placeholder="Please input your password")
-            div.field
+                input(type="password" name="password" placeholder="Please input your password" 
+                value=`${oldInput.password}`)
+            div.field(class=`${validationErrors.find(e => e.path === 'confirmPassword') ? 'error' : ''}`)
                 label Confirm Password
-                input(type="password" name="confirmPassword" placeholder="Please confirm your password")
+                input(type="password" name="confirmPassword" placeholder="Please confirm your password" 
+                value=`${oldInput.confirmPassword}`)
                 input(type="hidden", name="_csrf" value=`${csrfToken}`) 
             button.ui.button.primary(type="submit") 
                 span SignUp
