@@ -159,8 +159,10 @@ exports.postSignup = async (req, res, next) => {
         }
       }
     );
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -258,8 +260,10 @@ exports.getNewPassword = async (req, res, next) => {
       userId: user._id.toString(),
       passwordToken: token,
     });
-  } catch (error) {
-    console.log("error");
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 

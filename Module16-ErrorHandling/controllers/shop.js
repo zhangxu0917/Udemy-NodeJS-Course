@@ -10,8 +10,10 @@ module.exports.getProducts = async (req, res, next) => {
       path: "/product-list",
       isAuthenticated: req.session.isLoggedIn,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -48,7 +50,9 @@ module.exports.getCart = async (req, res, next) => {
       products,
     });
   } catch (err) {
-    console.error(err);
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -59,8 +63,10 @@ module.exports.postCart = async (req, res, next) => {
     const product = await Product.findById(prodId);
     await req.user.addToCart(product);
     res.redirect("/cart");
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -70,8 +76,10 @@ module.exports.postCartDeleteProduct = async (req, res, next) => {
   try {
     await req.user.removeFromCart(prodId);
     res.redirect("/cart");
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -87,8 +95,10 @@ module.exports.getOrders = async (req, res, next) => {
       orders,
       isAuthenticated: req.session.isLoggedIn,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -113,8 +123,10 @@ module.exports.postOrder = async (req, res, next) => {
     await order.save();
     await user.clearCart();
     res.redirect("/orders");
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -129,7 +141,9 @@ module.exports.getProduct = async (req, res, next) => {
       product,
       isAuthenticated: req.session.isLoggedIn,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };

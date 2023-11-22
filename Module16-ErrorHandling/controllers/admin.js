@@ -49,9 +49,10 @@ module.exports.postAddProduct = async (req, res, next) => {
     });
     await product.save();
     res.redirect("/");
-  } catch (error) {
-    req.flash("error", error.message);
-    console.error(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -65,8 +66,10 @@ module.exports.getEditProduct = async (req, res, next) => {
   const { prodId } = req.params;
   const product = await Product.findById(prodId);
 
+  const error = new Error("Product not exist!");
+  error.httpStatusCode = 500;
+  next(error);
   if (!product) {
-    return res.redirect("/");
   }
 
   res.render("admin/edit-product", {
@@ -134,8 +137,10 @@ module.exports.postDeleteProduct = async (req, res, next) => {
       userId: req.user._id,
     });
     res.redirect("/admin/products");
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 

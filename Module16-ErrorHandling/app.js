@@ -9,9 +9,6 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const csrfProtection = csrf();
 const flash = require("connect-flash");
-let nodemailer = require('nodemailer');  
-let smtpTransport = require('nodemailer-smtp-transport');
-
 
 const User = require("./models/user");
 
@@ -56,10 +53,19 @@ app.use(async (req, res, next) => {
 
   try {
     const user = await User.findById(req.session.user._id);
+
+    if (!user) {
+      const error = new Error("User not found!");
+      error.httpStatusCode = 500;
+      next(error);
+    }
+
     req.user = user;
     next();
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 });
 
@@ -73,7 +79,11 @@ app.use("/admin", adminRoutes);
 app.use(authRoutes);
 app.use(shopRoutes);
 
-app.use("/", errorContainer.get404);
+app.use("/500", errorContainer.get500);
+app.use(errorContainer.get404);
+app.use((error, req, res, next) => {
+  res.status(500).render("500");
+});
 
 const server = http.createServer(app);
 
