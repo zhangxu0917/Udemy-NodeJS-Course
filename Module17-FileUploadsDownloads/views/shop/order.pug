@@ -19,20 +19,27 @@ block content
                         th OrderId 
                         th ProductTitle 
                         th Quantity
+                        th Invoice
                 tbody 
                     for order of orders
                         each product, index in  order.products
                             tr
                                 if order.products.length > 1
                                     if index === 0
-                                        td(rowspan=order.items.length) # #{order._id}
+                                        td(rowspan=order.products.length) # #{order._id}
                                         td #{product.product.title}
                                         td #{product.quantity}
+                                        td(rowspan=order.products.length)
+                                            a(href=`/orders/${order._id}`) Invoice
+
                                     else 
                                         td #{product.product.title}
                                         td #{product.quantity}
+                                        
 
                                 else 
                                     td # #{order._id}
                                     td #{product.product.title}
                                     td #{product.quantity}
+                                    td 
+                                        a(href=`/orders/${order._id}`) Invoice

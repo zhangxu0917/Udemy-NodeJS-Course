@@ -15,13 +15,23 @@ block content
         div.content #{pageTitle}
     div.ui.ui.divider
 
-    form.ui.form(method="post" action=`${editing ? "/admin/edit-product/" + product.id : "/admin/add-product"}`)
+    form.ui.form(
+        method="post" 
+        action=`${editing ? "/admin/edit-product/" + product.id : "/admin/add-product"}` 
+        enctype="multipart/form-data")
         div.field(class=`${validationErrors.find(e => e.path === 'title') ? 'error' : ''}`)
             label Title
             input(type="text" name="title" placeholder="Product Title" value=`${editing || hasError ? product.title : ""}`)
-        div.field(class=`${validationErrors.find(e => e.path === 'imageUrl') ? 'error' : ''}`)
+        div.field(class=`${validationErrors.find(e => e.path === 'title') ? 'error' : ''}`)
             label Image
-            input(type="text" name="imageUrl" placeholder="Image Url" value=`${editing || hasError ? product.imageUrl : ""}`)
+            input(
+                type="file" 
+                name="image" 
+                id="image"
+            )
+        //- div.field(class=`${validationErrors.find(e => e.path === 'imageUrl') ? 'error' : ''}`)
+        //-     label Image
+        //-     input(type="text" name="imageUrl" placeholder="Image Url" value=`${editing || hasError ? product.imageUrl : ""}`)
         div.field(class=`${validationErrors.find(e => e.path === 'price') ? 'error' : ''}`)
             label Price
             input(type="number" name="price" step="0.01" placeholder="Price" value=`${editing || hasError ? product.price : ""}`)

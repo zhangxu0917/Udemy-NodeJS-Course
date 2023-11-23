@@ -15,7 +15,6 @@ router.post(
         min: 3,
       })
       .trim(),
-    body("imageUrl").isString().trim(),
     body("price").isFloat(),
     body("description").isLength({ min: 5, max: 400 }).trim(),
   ],
@@ -34,7 +33,6 @@ router.post(
         min: 3,
       })
       .trim(),
-    body("imageUrl").notEmpty().isString().trim(),
     body("price").isFloat(),
     body("description").isLength({ min: 5, max: 400 }).trim(),
   ],
