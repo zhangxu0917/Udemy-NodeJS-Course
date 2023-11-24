@@ -1,0 +1,45 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/main.css")
+block content
+    h2.ui.header
+        i.shopping.basket.icon
+        div.content #{pageTitle}
+    div.ui.ui.divider
+        if orders.length <= 0
+            div.ui.placeholder.segment
+                div.ui.icon.header
+                    i.folder.open.outline.icon
+                    span Nothing there, It's Empty!
+        else    
+            table.ui.celled.structured.table
+                thead 
+                    tr 
+                        th OrderId 
+                        th ProductTitle 
+                        th Quantity
+                        th Invoice
+                tbody 
+                    for order of orders
+                        each product, index in  order.products
+                            tr
+                                if order.products.length > 1
+                                    if index === 0
+                                        td(rowspan=order.products.length) # #{order._id}
+                                        td #{product.product.title}
+                                        td #{product.quantity}
+                                        td(rowspan=order.products.length)
+                                            a(href=`/orders/${order._id}`) Invoice
+
+                                    else 
+                                        td #{product.product.title}
+                                        td #{product.quantity}
+                                        
+
+                                else 
+                                    td # #{order._id}
+                                    td #{product.product.title}
+                                    td #{product.quantity}
+                                    td 
+                                        a(href=`/orders/${order._id}`) Invoice
