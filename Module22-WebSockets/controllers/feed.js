@@ -3,6 +3,7 @@ const Post = require("../models/post");
 const User = require("../models/user");
 const fs = require("fs");
 const path = require("path");
+const io = require("../socket");
 
 const clearImage = (filePath) => {
   filePath = path.join(__dirname, "..", filePath);
@@ -17,6 +18,8 @@ exports.getPosts = async (req, res, next) => {
     const totalItems = await Post.find().countDocuments();
 
     const posts = await Post.find()
+      .populate("creator")
+      .sort({ createdAt: -1 })
       .skip((currentPage - 1) * pageSize)
       .limit(pageSize);
 
@@ -38,20 +41,20 @@ exports.getPosts = async (req, res, next) => {
 
 exports.createPost = async (req, res, next) => {
   const errors = validationResult(req);
-
+  console.log(errors);
   if (!errors.isEmpty()) {
     const error = new Error("Validation failed, entered data is incorrect.");
     error.statusCode = 422;
     throw error;
   }
 
-  if (!req.file) {
-    const error = new Error("No image provided.");
-    error.statusCode = 422;
-    throw error;
-  }
+  // if (!req.file) {
+  //   const error = new Error("No image provided.");
+  //   error.statusCode = 422;
+  //   throw error;
+  // }
 
-  const imageUrl = req.file.path;
+  // const imageUrl = req.file.path;
 
   // Create post in db
   const { title, content } = req.body;
@@ -60,7 +63,7 @@ exports.createPost = async (req, res, next) => {
     const post = new Post({
       title,
       content,
-      imageUrl,
+      imageUrl: "images/apple-watch-s9.jpg",
       creator: req.userId,
     });
 
@@ -70,13 +73,24 @@ exports.createPost = async (req, res, next) => {
     user.posts.push(post);
     await user.save();
 
+    io.getIO().emit("posts", {
+      action: "create",
+      post: {
+        ...post._doc,
+        creator: {
+          _id: req.userId,
+          name: user.name,
+        },
+      },
+    });
+
     res.status(201).json({
       code: 0,
       message: "Post created successfully!",
       post: result,
       creator: {
         _id: user.id,
-        name: creator.name,
+        name: user.name,
       },
     });
   } catch (err) {
@@ -119,7 +133,9 @@ exports.getPost = async (req, res, next) => {
 exports.updatePost = async (req, res, next) => {
   const { postId } = req.params;
 
-  const errors = validatePostId(req);
+  const errors = validationResult(req);
+  console.log(errors);
+
   if (!errors.isEmpty()) {
     const error = new Error("Validation failed, entered data is incorrect.");
     error.statusCode = 422;
@@ -132,34 +148,39 @@ exports.updatePost = async (req, res, next) => {
     imageUrl = req.file.path;
   }
 
-  if (!imageUrl) {
-    const error = new Error("No file picked.");
-    error.statusCode = 422;
-    throw error;
-  }
+  // if (!imageUrl) {
+  //   const error = new Error("No file picked.");
+  //   error.statusCode = 422;
+  //   throw error;
+  // }
+
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("creator");
     if (!post) {
       const error = new Error("Couldn't find post.");
       error.statusCode = 404;
       throw error;
     }
 
-    if (post.creator.toString() !== req.userId) {
+    if (post.creator._id.toString() !== req.userId) {
       const error = new Error("Not authorized!");
       error.statusCode = 403;
       throw error;
     }
 
-    if (imageUrl !== post.imageUrl) {
-      clearImage(post.imageUrl);
-    }
+    // if (imageUrl !== post.imageUrl) {
+    //   clearImage(post.imageUrl);
+    // }
 
     post.title = title;
     post.content = content;
-    post.imageUrl = imageUrl;
-    await post.save();
+    // post.imageUrl = imageUrl;
 
+    const result = await post.save();
+    io.getIO().emit("posts", {
+      actions: "update",
+      post: result,
+    });
     res.status(200).json({
       message: "Post updated!",
       post: result,
@@ -196,6 +217,12 @@ exports.deletePost = async (req, res, next) => {
     const user = await User.findById(req.userId);
     user.posts.pull(postId);
     await user.save();
+
+    io.getIO().emit("post", {
+      action: "delete",
+      post: postId,
+    });
+
     res.status(200).json({
       code: 0,
       message: "Deleted Post.",
