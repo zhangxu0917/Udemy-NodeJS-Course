@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div>
+      <button id="create">Create</button>
+      <button id="update">Update</button>
+      <button id="delete">Delete</button>
+    </div>
+  </body>
+  <script>
+    const socket = io("http://localhost:8080");
+
+    socket.on("connect", () => {
+      console.log("Connected to server");
+    });
+
+    $("#create").on("click", () => {
+      console.log("Create");
+      fetch("http://localhost:8080/feed/post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1heEB0ZXN0LmNvbSIsInVzZXJJZCI6IjY1NjMyY2I3YzJjNWNjNTVhMWUxYzE5ZSIsImlhdCI6MTcwMTA4NTA4NiwiZXhwIjoxNzAxMDg4Njg2fQ.0dQ3rvrvNxA-KwbtU7sncj0CS8OasmuR87s51jKMQls",
+        },
+        body: JSON.stringify({
+          title: "This is a test post01",
+          content: "This is a test post01 content.",
+        }),
+      })
+        .then((res) => res.json())
+        .then((resData) => {
+          console.log("created successfully.");
+        });
+    });
+
+    $("#update").on("click", () => {
+      console.log("Update");
+      fetch("http://localhost:8080/feed/post/656483c985342715d64d3226", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1heEB0ZXN0LmNvbSIsInVzZXJJZCI6IjY1NjMyY2I3YzJjNWNjNTVhMWUxYzE5ZSIsImlhdCI6MTcwMTA4NTA4NiwiZXhwIjoxNzAxMDg4Njg2fQ.0dQ3rvrvNxA-KwbtU7sncj0CS8OasmuR87s51jKMQls",
+        },
+        body: JSON.stringify({
+          title: "This is a test updated post01",
+          content: "This is a test updated post01 content.",
+        }),
+      })
+        .then((res) => res.json())
+        .then((resData) => {
+          console.log("updated successfully.");
+        });
+    });
+
+    $("#delete").on("click", () => {
+      console.log("Delete");
+      fetch("http://localhost:8080/feed/post/656483c985342715d64d3226", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1heEB0ZXN0LmNvbSIsInVzZXJJZCI6IjY1NjMyY2I3YzJjNWNjNTVhMWUxYzE5ZSIsImlhdCI6MTcwMTA4NTA4NiwiZXhwIjoxNzAxMDg4Njg2fQ.0dQ3rvrvNxA-KwbtU7sncj0CS8OasmuR87s51jKMQls",
+        },
+      })
+        .then((res) => res.json())
+        .then((resData) => {
+          console.log("deleted successfully.");
+        });
+    });
+
+    socket.on("posts", (data) => {
+      if (data.action === "create") {
+        console.log("socket['create']", data.post);
+      } else if (data.action === "update") {
+        console.log(`socket['update']`, data.post);
+      } else if (data.action === "delete") {
+        console.log("socket['delete']", data.post);
+      }
+    });
+  </script>
+</html>
