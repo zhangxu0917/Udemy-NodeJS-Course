@@ -1,13 +1,14 @@
 const express = require("express");
 const path = require("path");
-const feedRoutes = require("./routes/feed");
-const authRoutes = require("./routes/auth");
-const auth = require("./middlewares/is-auth");
+const fs = require("fs");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql");
+
+const auth = require("./middlewares/is-auth");
+const { clearImage } = require("./util/file");
 
 const graphqlSchema = require("./graphql/schema");
 const graphqlResolver = require("./graphql/resolves");
@@ -26,10 +27,11 @@ const fileStorage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
+  console.log(file.mimetype);
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpeg" ||
-    file.mimetype == "image/jpg"
+    file.mimetype === "image/jpg"
   ) {
     cb(null, true);
   } else {
@@ -38,6 +40,8 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use(bodyParser.json()); // FIXME: for application/json
+
+// FIXME: use multer
 app.use(
   multer({
     storage: fileStorage,
@@ -47,11 +51,25 @@ app.use(
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
+app.put("/post-image", (req, res, next) => {
+  console.log(req.file);
+  if (!req.file) {
+    return res.status(200).json({
+      message: "No file provided!",
+    });
+  }
+
+  if (req.body.oldPath) {
+    clearImage(req.body.oldPath);
+  }
+
+  return res.status(201).json({
+    message: "File Stored.",
+    filePath: req.file.path,
+  });
+});
+
 app.use(cors());
-
-app.use("/feed", feedRoutes);
-app.use("/auth", authRoutes);
-
 app.use(auth);
 
 app.use(
@@ -78,7 +96,6 @@ app.use(
 );
 
 app.use((error, req, res, next) => {
-  console.log(error);
   const status = error.statusCode || 500;
   const message = error.message;
   const data = error.data;
