@@ -1,0 +1,20 @@
+.mainContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.editContainer {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.editContainer .input {
+  width: 200px;
+  margin-right: 12px;
+}
+
+.taskText {
+  color: #1677ff;
+}
