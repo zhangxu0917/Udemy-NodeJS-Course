@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="App">
       <Space direction="vertical" style={{ width: "100%" }} size={[0, 48]}>
-        <Layout style={{ height: "100vh" }}>
+        <Layout style={{ minHeight: "100vh" }}>
           <Header />
           <Content style={{ padding: "40px 20%" }}>
             <Router>

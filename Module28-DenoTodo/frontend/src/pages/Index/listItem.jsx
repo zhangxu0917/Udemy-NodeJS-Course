@@ -1,10 +1,17 @@
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Space, Button, Tag, Input, Radio, Modal } from "antd";
 
+import { TodosContext } from "./index";
 import classes from "./listItem.module.css";
 
 const ListItem = ({ item }) => {
+  const { loadTodos, messageApi } = useContext(TodosContext);
+  const [formData, setFormData] = useState({
+    status: item.status,
+    text: item.text,
+  });
+
   const [isEdit, setIsEdit] = useState(false);
 
   const [modal, contextHolder] = Modal.useModal();
@@ -24,22 +31,49 @@ const ListItem = ({ item }) => {
     },
   ];
 
-  const onChangeStatus = (e) => {
-    console.log(e);
+  const onChangeStatus = ({ target: { value } }) => {
+    setFormData({
+      ...formData,
+      status: value,
+    });
+  };
+
+  const onChangeText = ({ target: { value } }) => {
+    setFormData({
+      ...formData,
+      text: value,
+    });
   };
 
   const handleEditClick = () => {
-    console.log("IsEdit");
     setIsEdit(true);
   };
 
   const handleUpdate = () => {
     console.log("Update");
+    fetch(`http://localhost:8080/todos/${item.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        messageApi.open({
+          type: "success",
+          content: "Updated successfully",
+        });
+        loadTodos();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     setIsEdit(false);
   };
 
   const handleDelete = () => {
-    console.log(11231);
     modal.confirm({
       title: "Confirm",
       icon: <ExclamationCircleOutlined />,
@@ -49,12 +83,44 @@ const ListItem = ({ item }) => {
           <p className={classes.taskText}>{item.text}</p>
         </>
       ),
-      okText: "Save",
+      okText: "Submit",
       cancelText: "Cancel",
+      onOk: handleDeleteTask,
     });
   };
 
-  const handleDeleteTask = () => {};
+  const handleDeleteTask = () => {
+    console.log(item);
+    fetch(`http://localhost:8080/todos/${item.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.code === 0) {
+          console.log(messageApi);
+
+          messageApi.open({
+            type: "success",
+            content: "operation successful",
+          });
+
+          loadTodos();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleCancel = () => {
+    setIsEdit(false);
+    setFormData({
+      ...item,
+    });
+  };
 
   return (
     <>
@@ -86,18 +152,20 @@ const ListItem = ({ item }) => {
           <div>
             <Input
               className={classes.input}
+              value={formData.text}
               placeholder="Please input a task."
+              onChange={onChangeText}
             />
             <Radio.Group
               options={options}
               onChange={onChangeStatus}
-              value={item.status}
+              value={formData.status}
               optionType="button"
               buttonStyle="solid"
             />
           </div>
           <Space>
-            <Button onClick={() => setIsEdit(false)}>Cancel</Button>
+            <Button onClick={handleCancel}>Cancel</Button>
             <Button type="primary" onClick={handleUpdate}>
               Save
             </Button>
